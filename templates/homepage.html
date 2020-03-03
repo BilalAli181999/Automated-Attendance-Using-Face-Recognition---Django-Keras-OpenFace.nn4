@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        .cardBtn {
+            padding: 15px 25px;
+            font-size: 24px;
+            text-align: center;
+            cursor: pointer;
+            outline: none;
+            color: #fff;
+            background-color: #386ebe;
+            ;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 9px #999;
+        }
+        
+        .cardBtn:hover {
+            background-color: rgba(25, 25, 247, 0.808)
+        }
+        
+        .cardBtn:active {
+            background-color: blue;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
+        
+        .tableFixHead {
+            overflow-y: auto;
+            max-height: 500px;
+        }
+        
+        .tableFixHead thead th {
+            position: sticky;
+            top: 0;
+        }
+        /* Just common table stuff. Really. */
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        th,
+        td {
+            padding: 8px 16px;
+        }
+        
+        th {
+            background: #eee;
+            background-color: #66DB72;
+        }
+    </style>
+    <title>Home Page</title>
+
+</head>
+
+<body style="background-color:rgba(210, 210, 210,0.5);">
+    <nav class="navbar navbar-default navbar-fixed-top" style="height: 12%;">
+        <div class="container-fluid">
+            <div class="navbar-header" style="margin-right:10%;">
+                <a class="navbar-brand" href="#">
+                    <img src="static/Images/logo3.png" alt="logo" style="width:160px;height: 80px; margin-top:-20px;margin-left:10%;">
+                </a>
+                <button id="navbarCollapseBtn" type="button" class="navbar-toggle pull-right" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+            </div>
+            <a id="logOutBtn" class="btn btn-default pull-right hidden-xs" href="#" style="margin-top:1.5%;">Logout</a>
+        </div>
+    </nav>
+    <div class="container" style="margin-top:9%; position:center;">
+        <div class="col-md-4 col-lg-4 col-xs-12 col-sm-12 ">
+            <div class="card" style="width: 20rem; margin-left:30%;margin-top:10%;">
+                <a href="{% url 'Students' %}" class="btn cardBtn">
+                    <img src="static/Images/students.png" style="height:100%; width:100%;" class="card-img-top" alt="...">
+                    <br>
+                    <h4>Students</h4>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-4 col-xs-12 col-sm-12 ">
+            <div class="card" style="width: 20rem; margin-left:30%;margin-top:10%;">
+                <a href="{% url 'AttendancePage' %}" class="btn cardBtn">
+                    <img src="static/Images/add.png" style="height:100%; width:100%;" class="card-img-top" alt="...">
+                    <br>
+                    <h4>Attendance</h4>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-lg-4 col-xs-12 col-sm-12 ">
+            <div class="card" style="width: 20rem; margin-left:30%;margin-top:10%;">
+                <a href="liveStream.html" class="btn cardBtn">
+                    <img src="static/Images/video_player_play_audio_web_website_media_screen_control_panel_movie_interface_music_computer_stream_broadcast_software_application_flat_design_icon-512.png" style="height:100%; width:100%;" class="card-img-top" alt="...">
+                    <br>
+                    <h4>View Live Stream</h4>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+
+</html>
