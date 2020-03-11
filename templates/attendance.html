@@ -12,8 +12,11 @@
     <script src="static/js/index.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Attendance</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script src="sweetalert2.all.min.js"></script>
+<!-- Optional: include a polyfill for ES6 Promises for IE11 -->
+<script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
 
 </head>
 
@@ -30,7 +33,7 @@
                             <span class="icon-bar"></span>
                         </button>
             </div>
-            <a id="logOutBtn" class="btn btn-default pull-right hidden-xs" href="#" style="margin-top:1.5%;">Logout</a>
+            <a id="logOutBtn" class="btn btn-default pull-right hidden-xs" onclick="logout()" style="margin-top:1.5%;">Logout</a>
         </div>
     </nav>
 
@@ -49,9 +52,7 @@
                 </div>
             </div>
         </div>
-         <form method="post" action="{% url 'updateAttendance'  %}">
-{% csrf_token %}
-
+      
         <div style="background-color:whitesmoke;" class="tableFixHead text-center">
             <table class="table table-responsive table-hover">
                <thead>
@@ -68,18 +69,20 @@
         </div>
 
         <div class="text-center">
-            <button onclick="location.href = 'homepage.html';" class="btn btn-primary pull-right" type="" style="width:20%;color:white; border-radius:6px;" id="removeInvigilator">Go to Home page</button>
+            <button  type="button" href="#" onclick="redirectToHomepage()" class="btn btn-primary pull-right" type="" style="width:20%;color:white; border-radius:6px;" id="removeInvigilator">Go to Home page</button>
         </div>
        <div class="text-center">
-            <button  class="btn btn-success pull-right" type="submit" style="width:20%;color:white; border-radius:6px;margin-right: 10px" id="removeInvigilator">Update Attendance</button>
+            <button  class="btn btn-success pull-right" type="submit" style="width:20%;color:white; border-radius:6px;margin-right: 10px" onclick="updateAtt()" id="updateAtt">Update Attendance</button>
         </div>
-</form>
+
     </div>
 
 </body>
 
 <script>
-
+    function redirectToHomepage() {
+        window.location.replace("Home");
+    }
     var todayDate = new Date().toISOString().slice(0,10);
             $.getJSON('http://127.0.0.1:8000/Attendance/'+todayDate, function(data) {
                 $.each(data, function(i,value){
@@ -135,7 +138,39 @@
     }
 });
 
+function updateAtt()
+{
+      var array = [];
+            $.each($("input[name='att']:checked"), function(){
+                array.push($(this).val());
+            }); 
+           var date=$('#datepicker-1').val()
+        date=date.split("/")
+        newDate=date[2]+'-'+date[0]+'-'+date[1]
+         $.post("UpdateAttendance", {date: newDate,csrfmiddlewaretoken: '{{ csrf_token }}','att[]':array}, function(result){
+         if (result=='Success')
+         {
+                Swal.fire({
+                title: 'Success',
+                text: ' Updated Successfully',
+                icon: 'success',
+               })
 
+         }
+         else{
+              Swal.fire({
+                title: 'Failure',
+                text: ' Updation Failed',
+                icon: 'error',
+               })
+         }
+    });
+
+}
+
+function logout() {
+        window.location.replace("SignIn");
+    }
 </script>
 
 

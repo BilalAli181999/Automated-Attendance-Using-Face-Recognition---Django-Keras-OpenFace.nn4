@@ -97,17 +97,18 @@
         <div style=" margin-top:12%;">
             <div class="container col-md-5 col-xs-12 col-md-offset-0 col-sm-offset-2 col-xs-offset-3">
                 <img class="col-md-offset-4 col-xs-offset-3" src="static/Images/loginAvatar.png" height="100" width="100" alt="Alternate Text" />
-                <form class="form-horizontal" action="homepage.html" style="margin-top:15%;">
+                <form class="form-horizontal" method="POST" action="{% url 'mySignIn' %}" style="margin-top:15%;">
+                    {%csrf_token%}
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="username">Username:</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="username" placeholder="Enter username">
+                            <input type="text" class="form-control" name='username' id="username" placeholder="Enter username">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="pwd">Password:</label>
                         <div class="col-sm-8">
-                            <input type="password" class="form-control" id="pwd" placeholder="Enter password">
+                            <input type="password" class="form-control" name='password' id="pwd" placeholder="Enter password">
                         </div>
                     </div>
 
@@ -124,6 +125,9 @@
                         </div>
                     </div>
                 </form>
+                {% if status %}
+                <h1>Login Unsuccessful</h1>
+                {% endif %}
             </div>
             <div class="col-md-1 vLine hidden-xs hidden-sm col-md-offset-1"></div>
             <!-- @*Sign Up*@ -->

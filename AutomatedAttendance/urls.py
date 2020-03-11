@@ -27,5 +27,8 @@ urlpatterns = [
     path('Students/Add',addStudent,name='addStd'),
     path('Attendance/<slug:date>',getAttendance,name='getAttendance'),
     path('AttendancePage', AttendancePage, name='AttendancePage'),
-    path('UpdateAttendance',updateAttendance,name='updateAttendance')
+    path('UpdateAttendance',updateAttendance,name='updateAttendance'),
+    path('LiveStream',liveStream,name='liveStream'),
+    path('SignUp',mySignIn,name='mySignIn'),
+
 ]

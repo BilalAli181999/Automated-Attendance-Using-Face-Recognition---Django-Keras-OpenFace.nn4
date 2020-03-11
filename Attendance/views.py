@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render,redirect,HttpResponseRedirect
 from rest_framework.parsers import JSONParser
 
@@ -49,12 +49,10 @@ def addStudent(request):
         rollno = request.POST['rollno']
         Name = request.POST['name']
         Email = request.POST['email']
-        Password = request.POST['password']
         std=Student()
         std.RollNo=rollno
         std.StdName=Name
         std.Email=Email
-        std.Password=Password
         std.save()
         return redirect(AllStudents)
     else:
@@ -64,8 +62,7 @@ def addStudent(request):
 
 
 def getAttendance(request,date):
-    today= datetime.date.today()
-    if not Attendance.objects.filter(date=today).exists():
+    if not Attendance.objects.filter(date=date).exists():
         std = Student.objects.all()
         for i in std:
             a = Attendance()
@@ -84,17 +81,40 @@ def getAttendance(request,date):
 
 
 def updateAttendance(request):
-    checked=request.POST.getlist('att')
-    today = datetime.date.today()
-    Attendance.objects.all().update(status=False)
+    checked=request.POST.getlist('att[]')
+    today = request.POST['date']
+    Attendance.objects.filter(date=today).update(status=False)
     for i in checked:
         std=Student.objects.get(RollNo=i)
         a=Attendance.objects.get(student=std,date=today)
         a.status=True
         a.save()
-    return redirect(AttendancePage)
+    html="Success"    
+    return HttpResponse(html)
 
 def AttendancePage(request):
     return render(request,'attendance.html')
 
+def liveStream(request):
+    return render(request, 'liveStream.html')
 
+def mySignIn(request):
+    username=request.POST['username']
+    password=request.POST['password']
+    try:
+        name = Admin.objects.get(Username=username)
+    except Admin.DoesNotExist:
+        name = None
+    try:
+        stdPassword = Admin.objects.get(Password=password ,Username=username)
+    except Admin.DoesNotExist:
+        stdPassword = None
+    status=False
+    if name!=None and stdPassword!=None:   
+        st1=str(username)==str(name.Username)
+        st2=str(stdPassword.Password)==str(password)
+        if ( st1 and st2 ):
+            return redirect(Home)
+    else:
+            status=True
+            return render(request,'signin.html',{'status':status})    

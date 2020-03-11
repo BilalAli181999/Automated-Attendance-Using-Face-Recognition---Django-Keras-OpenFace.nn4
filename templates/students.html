@@ -3,6 +3,7 @@
 
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
@@ -24,7 +25,7 @@
                             <span class="icon-bar"></span>
                         </button>
             </div>
-            <a id="logOutBtn" class="btn btn-default pull-right hidden-xs" href="#" style="margin-top:1.5%;">Logout</a>
+            <a id="logOutBtn" class="btn btn-default pull-right hidden-xs" onclick="logout()" style="margin-top:1.5%;">Logout</a>
         </div>
     </nav>
     <div class="container " style="margin-top:9%; position:center;">
@@ -33,10 +34,10 @@
             <table class="table table-responsive table-hover">
                 <thead style="">
                     <tr style="background-color: #55a6e4b7;">
-                        <th style="text-align:center;">Username</th>
+                        <th style="text-align:center;">Roll Number</th>
                         <th style="text-align:center;">Student Name</th>
                         <th style="text-align:center;">Email</th>
-                        <th style="text-align:center;">View Attendance</th>
+{#                        <th style="text-align:center;">View Attendance</th>#}
                         <th style="text-align:center;">Update</th>
                         <th style="text-align:center;">Delete</th>
                     </tr>
@@ -47,9 +48,9 @@
                         <td>{{ std.RollNo }}</td>
                         <td>{{ std.StdName }}</td>
                         <td>{{ std.Email }}</td>
-                        <td><button class="btn btn-secondary" style="background-color: lightsteelblue;"><i class="fa fa-eye fa-lg"></i></button></td>
-                        <td><button class="btn btn-primary"><i class="fa fa-edit fa-lg"></i></button></td>
-                        <td><button class="btn btn-danger"><a href="{% url 'delStd' std.RollNo %}"><i class="fa fa-trash fa-lg"></i></a></button></td>
+{#                        <td><button class="btn btn-secondary" style="background-color: lightsteelblue;"><i class="fa fa-eye fa-lg"></i></button></td>#}
+                        <td><button class="btn btn-primary" value="{{ std.RollNo}},{{std.StdName}},{{std.Email}}" onclick="openUpdateModal(this.value)"><i class="fa fa-edit fa-lg"></i></button></td>
+                        <td><button class="btn btn-danger" value="{{ std.RollNo }}" onclick="openDeleteModal(this.value)"><i class="fa fa-trash fa-lg"></i></button></td>
                     </tr>
                   {% endfor %}
                 </tbody>
@@ -57,9 +58,10 @@
         </div>
         <div class="text-center">
             <button class="btn btn-primary pull-left" type="button" style=" width:20%;color:white; border-radius:6px;" id="addInvigilator" data-toggle="modal" data-target="#myModal">Add Student</button> &nbsp; &nbsp;
-            <button onclick="location.href = 'homepage.html';" class="btn btn-primary pull-right" type="submit" style="margin-left:1%;width:20%;color:white; border-radius:6px;">Go to Home Page</button>
+            <button  onclick="redirectToHomepage()" class="btn btn-primary pull-right" type="submit" style="margin-left:1%;width:20%;color:white; border-radius:6px;">Go to Home Page</button>
         </div>
     </div>
+    {#Add new student modal starts#}
     <div class="modal fade" id="myModal" role="dialog" style="margin-top:7%;">
         <div class="modal-dialog modal-md" style="text-align:center;">
             <div class="modal-content">
@@ -89,12 +91,6 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-2" for="email">Password</label>
-                            <div class="col-sm-8">
-                                <input type="password" class="form-control" name="password" placeholder="Enter Class" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-8">
                                 <button type="submit" class="btn btn-primary">Add Student</button>
                             </div>
@@ -104,6 +100,96 @@
             </div>
         </div>
     </div>
-</body>
+{#    delete confirmation of student modal#}
+  <div class="modal fade" id="deleteModal" role="dialog" style="margin-top:7%;">
+        <div class="modal-dialog modal-md" style="">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#386ebe">
+                    <button type="button" style="color:white;" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="color:white;">Delete Confirmation</h4>
+                </div>
+                 <div class="modal-body">
+                     Are you sure you want to delete this record?
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <a ><button type="button" id="deleteModalButton" value=""  onclick="deleteRecord(this.value)" class="btn btn-danger">Delete</button></a>
+                  </div>
+            </div>
+        </div>
+    </div>
+    {#update student record modal#}
+      <div class="modal fade" id="updateRecordModal" role="dialog" style="margin-top:7%;">
+        <div class="modal-dialog modal-md" style="text-align:center;">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#386ebe">
+                    <button type="button" style="color:white;" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="color:white;">Update Student</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" action="{% url 'addStd' %}" style="margin-top:1%;" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="username">Roll No:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="rollno" id="studentRollNumber" value="" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="email">Name:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="name" id="studentName" value="" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="email">Email</label>
+                            <div class="col-sm-8">
+                                <input type="email" class="form-control" name="email" id="studentEmail" value="" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-8">
+                                <button type="submit" class="btn btn-primary">Update Student</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
+<script>
+    function deleteRecord(val) {
+        window.location.replace("Students/Delete/"+val);
+
+    }
+    function redirectToHomepage() {
+        window.location.replace("Home");
+    }
+    function openUpdateModal(val) {
+        // val consist of comma separated values of roll number, name and email
+        var detailsArr = val.split(',');
+        $("#studentRollNumber").attr("value",detailsArr[0]);
+        $("#studentName").attr("value",detailsArr[1]);
+        $("#studentEmail").attr("value",detailsArr[2]);
+        $("#updateRecordModal").modal("toggle");
+    }
+    function recordUpdateSuccessful(){
+        setTimeout(function () {
+                Swal.fire({
+                title: 'Success',
+                text: 'Record Updated Successfully',
+                icon: 'success',
+               })
+        },100)
+    }
+    function openDeleteModal(val) {
+        $("#deleteModal").modal("toggle");
+        $("#deleteModalButton").attr("value",val);
+    }
+    function logout() {
+        window.location.replace("SignIn");
+    }
+</script>
+</body>
 </html>
