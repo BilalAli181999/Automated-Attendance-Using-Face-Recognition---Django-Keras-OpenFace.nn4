@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render,redirect,HttpResponseRedirect
+from django.shortcuts import HttpResponseRedirect, get_object_or_404, redirect, render
 from rest_framework.parsers import JSONParser
 
 from .models import *
@@ -86,13 +86,21 @@ def updateAttendance(request):
     Attendance.objects.filter(date=today).update(status=False)
     for i in checked:
         std=Student.objects.get(RollNo=i)
-        a=Attendance.objects.get(student=std,date=today)
+        a=get_object_or_404(Attendance, student=std,date=today)
         a.status=True
         a.save()
     html="Success"    
     return HttpResponse(html)
 
 def AttendancePage(request):
+    today=datetime.date.today()
+    if not Attendance.objects.filter(date=today).exists():
+            std = Student.objects.all()
+            for i in std:
+                  a = Attendance()
+                  a.student = i
+                  a.date = today
+                  a.save()
     return render(request,'attendance.html')
 
 def liveStream(request):
@@ -117,4 +125,12 @@ def mySignIn(request):
             return redirect(Home)
     else:
             status=True
-            return render(request,'signin.html',{'status':status})    
+            return render(request,'signin.html',{'status':status}) 
+
+def viewAttendance(request,rollNo):
+        student=Student.objects.filter(RollNo=rollNo)
+        month=datetime.datetime.today().month
+        attenadance = Attendance.objects.filter(date__icontains=month,student__RollNo=rollNo,status=True)
+        count=len(attenadance)
+        return HttpResponse(count)
+    

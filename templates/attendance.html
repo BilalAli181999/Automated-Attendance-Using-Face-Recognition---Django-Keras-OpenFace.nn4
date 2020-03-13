@@ -21,6 +21,8 @@
 </head>
 
 <body style="background-color:rgba(210, 210, 210,0.5);">
+
+
     <nav class="navbar navbar-default navbar-fixed-top" style="height: 12%;">
         <div class="container-fluid">
             <div class="navbar-header" style="margin-right:10%;">
@@ -99,7 +101,7 @@
                  }
 
                  rollno= '<td>'+value['student']['RollNo']+'</td>'+'<td>'+value['student']['StdName']+'</td>';
-                 button='<td><button class="btn btn-secondary" style="background-color: lightsteelblue;"><i class="fa fa-eye fa-lg"></i></button></td>';
+                 button='<td><button class="viewBtn" onclick="viewClicked(this.value)"  value="'+value['student']['RollNo']+'" class="btn btn-secondary" style="background-color: lightsteelblue;"><i class="fa fa-eye fa-lg"></i></button></td>';
                  var row='<tr>'+rollno+'</td><td>'+checkbox+'</td>'+button+'</tr>';
                  $('#mytbody').append(row);
                 });
@@ -129,7 +131,7 @@
                  }
 
                  rollno= '<td>'+value['student']['RollNo']+'</td>'+'<td>'+value['student']['StdName']+'</td>';
-                 button='<td><button class="btn btn-secondary" style="background-color: lightsteelblue;"><i class="fa fa-eye fa-lg"></i></button></td>';
+                 button='<td><button class="viewBtn" onclick="viewClicked(this.value)"  value="'+value['student']['RollNo']+'" class="btn btn-secondary" style="background-color: lightsteelblue;"><i class="fa fa-eye fa-lg"></i></button></td>';
                  var row='<tr>'+rollno+'</td><td>'+checkbox+'</td>'+button+'</tr>';
                  $('#mytbody').append(row);
                 });
@@ -171,6 +173,26 @@ function updateAtt()
 function logout() {
         window.location.replace("SignIn");
     }
+
+
+function viewClicked(value)
+{
+   
+    $.getJSON('http://127.0.0.1:8000/viewAttendance/'+value, function(data) {
+
+      var roll=   value
+      var count=  data
+        Swal.fire({
+                title: "RollNo: "+roll,
+                text:"Presents Marked this Month : " +count+"/30",
+                icon: 'info',
+               })
+
+                 });
+           
+   
+}
+
 </script>
 
 

@@ -30,5 +30,5 @@ urlpatterns = [
     path('UpdateAttendance',updateAttendance,name='updateAttendance'),
     path('LiveStream',liveStream,name='liveStream'),
     path('SignUp',mySignIn,name='mySignIn'),
-
+    path('viewAttendance/<slug:rollNo>',viewAttendance,name='viewAttendance')
 ]
