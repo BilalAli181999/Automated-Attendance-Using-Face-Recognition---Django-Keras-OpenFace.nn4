@@ -1,14 +1,15 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import HttpResponseRedirect, get_object_or_404, redirect, render
 from rest_framework.parsers import JSONParser
-
+from django.views.decorators.csrf import csrf_exempt
 from .models import *
 import time,datetime
 from .serializers import *
+from Attendance.models import Student
+import json
 # Create your views here.
 
-
-
+    
 
 def Start(request):
     return render(request,'signin.html')
@@ -133,4 +134,34 @@ def viewAttendance(request,rollNo):
         attenadance = Attendance.objects.filter(date__icontains=month,student__RollNo=rollNo,status=True)
         count=len(attenadance)
         return HttpResponse(count)
+
+@csrf_exempt    
+def MarkAttendance(request):
+    today=datetime.date.today()  
+       
+    if request.method == 'POST':
+       data={}
+       label=request.POST['labels']
+       status=get_object_or_404(Attendance, student__RollNo=label,date=today).status
+      
+       if label!='Unknown' and Student.objects.filter(RollNo=label).exists() and status==False:  
+             Attendance.objects.filter(student__RollNo=label,date=today).update(status=True)
+       return HttpResponse(None)     
+    else:
+        marked=Attendance.objects.filter(date=today,status=True)
+        dataList=[]
+        for std in marked:
+            data={'name':std.student.RollNo}
+            dataList.append(data)
+
+        print(dataList)
+        myJson=JsonResponse(dataList,safe=False)
+        return myJson         
+         
     
+            
+              
+    
+
+      
+        
