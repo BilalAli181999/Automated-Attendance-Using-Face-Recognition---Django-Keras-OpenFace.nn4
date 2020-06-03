@@ -7,10 +7,17 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Stream</title>
-
+    <style>
+        .toast{
+            margin-top: 20px;
+            box-shadow: 2px 6px 20px 5px #888888;
+            background-color: #1E90FF;
+            color: white;
+        }
+    </style>
 </head>
 
-<body style="background-color:rgba(210, 210, 210,0.5);">
+<body style="">
     <nav class="navbar navbar-default navbar-fixed-top" style="height: 12%;">
         <div class="container-fluid">
             <div class="navbar-header" style="margin-right:10%;">
@@ -27,15 +34,12 @@
         </div>
     </nav>
 
-   
 
-    <div class="container text-center" style="margin-top:8%;">
-        <h2 class="text-center text-uppercase" style="padding-top:1%;background-color:#386ebe; color:white; height:50px;">Live Video Stream</h2>
-        <iframe src="https://www.youtube.com/embed/tycnGEr0pkQ?autoplay=0&fs=0&iv_load_policy=3&showinfo=0&rel=0&cc_load_policy=0&start=0&end=0&origin=https://youtubeembedcode.com" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture "
-            allowfullscreen style="width: 100%;height: 400px; "></iframe>
-        <div class="text-center ">
-            <button onclick="redirectToHomepage()" class="btn btn-primary pull-right " type="submit " style="margin-left:1%;width:20%;color:white; border-radius:6px; ">Go to Home Page</button>
-        </div>
+
+
+    <div id='marked' class="container-fluid"  style="display: flex; flex-direction: column;margin-top: 18vh;justify-content: space-between">
+
+
     </div>
 <script>
 
@@ -46,6 +50,41 @@ function logout() {
         window.location.replace("SignIn");
     }
 </script>
+
+
+<script>
+var today = new Date();
+var date = today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+window.setInterval(function(){
+
+        $('#marked').empty()
+ $.getJSON('http://127.0.0.1:8000/MarkAttendance', function(data) {
+           $.each(data, function(i, field){
+            var status= field.name +" has been Marked presesnt for the date:  "+date;
+           $('#marked').append("<div class=\"toast\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\">\n" +
+               "  <div class=\"toast-header\">\n" +
+               "    <img src=\"static/Images/std.png\" class=\"rounded mr-2\" alt=\"...\">\n" +
+               "    <strong class=\"mr-auto\">"+field.name+"</strong>\n" +
+               "    <small>"+new Date()+"</small>\n" +
+               "    <button type=\"button\" class=\"ml-2 mb-1 close\" data-dismiss=\"toast\" aria-label=\"Close\">\n" +
+               "      <span aria-hidden=\"true\">&times;</span>\n" +
+               "    </button>\n" +
+               "  </div>\n" +
+               "  <div class=\"toast-body\">"+ status +"</div>\n" +
+               "</div>")
+
+      });
+        });
+
+
+
+
+}, 3000);
+
+</script>
+
+
+
 </body>
 
 </html>
